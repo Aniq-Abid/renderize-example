@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- Load js -->
+    <script src="libs/bootstrap/bootstrap.bundle.min.js" defer></script>
+    <!-- Load css -->
+    <link href="libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="libs/highlight/highlight.min.css">
+    <style>
+        pre {
+            position: relative;
+            padding: 1em;
+            background: #f5f5f5;
+            border-radius: 5px;
+            overflow: auto;
+        }
+
+        .copy-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #007bff;
+            color: #fff;
+            border: none;
+            padding: 2px 10px;
+            cursor: pointer;
+            border-radius: 3px;
+            opacity: 0.8;
+        }
+
+        .copy-button:hover {
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary py-2">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">JustExample</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="index.html">Autoload Example</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="pagination.html">Pagination Example</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="doc.html">Doc</a>
+                    </li>
+                    <li class="nav-item"> 
+                        <a class="nav-link" target="_blank" href="https://www.npmjs.com/package/renderize">Npm</a>
+                    </li>
+                    <li class="nav-item"> 
+                        <a class="nav-link" target="_blank" href="https://github.com/Aniq-Abid/Renderize">Github</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-12 mt-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title badge bg-primary">Introduction</h5>
+                        <p class="card-text">Renderize.js is a JavaScript library that facilitates flexible and dynamic
+                            rendering of HTML templates based on a provided array of objects. It supports various
+                            rendering types, lazy loading of images, flexible templating options and it offers various
+                            configuration options.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title badge bg-primary">Document</h5>
+                        <p class="card-text" id="doc"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="libs/highlight/highlight.min.js"></script>
+    <script src="libs/marked/marked.min.js"></script>  
+    <script>
+         // Function to handle copy to clipboard
+         function copyCodeToClipboard(button) {
+                const code = button.previousElementSibling.innerText;
+                navigator.clipboard.writeText(code).then(() => {
+                    button.textContent = 'Copied!';
+                    setTimeout(() => button.textContent = 'Copy', 2000);
+                });
+            }
+
+            (async () => {
+                const res = await fetch('README.md');
+                const markdown = await res.text();
+                const htmlContent = marked.marked(markdown, {
+                    highlight: function (code, lang) {
+                        return hljs.highlightAuto(code, [lang]).value;
+                    }
+                });
+                document.getElementById("doc").innerHTML = htmlContent;
+
+                // Add copy buttons to code blocks
+                document.querySelectorAll('pre code').forEach(codeBlock => {
+                    const button = document.createElement('button');
+                    button.className = 'copy-button';
+                    button.textContent = 'Copy';
+                    button.addEventListener('click', () => copyCodeToClipboard(button));
+                    codeBlock.parentNode.appendChild(button);
+                });
+            })();
+
+        // Initialize Highlight.js
+        document.addEventListener('DOMContentLoaded', (event) => {
+            hljs.highlightAll();
+        });
+    </script>
+</body>
+
+</html>
